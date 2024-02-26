@@ -18,7 +18,7 @@
     border: 1px solid #ccc;
     margin-bottom: 15px;
 }
-.form button[type="submit"] {
+.form button {
     width: 100%;
     background-color: #4CAF50;
     color: white;
@@ -29,6 +29,34 @@
     cursor: pointer;
   }
   
-  .form button[type="submit"]:hover {
+  .form button:hover {
     background-color: #45a049;
   }
+  .table {
+    margin-top: 20px;
+  }
+  
+  
+  .table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table th {
+    background-color: #f2f2f2;
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+
+  .table td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+
+  .table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+

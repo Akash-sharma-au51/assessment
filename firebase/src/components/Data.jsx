@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { db } from "../config/firebase";
 import "../styles/form.css";
 
 const Data = () => {
@@ -16,14 +17,26 @@ const Data = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Form submitted:", data);
-        setData({
-            name: "",
-            age: "",
-            salary: ""
-        });
+        try {
+            console.log(db)
+            
+            if (!data.name || !data.age || !data.salary) {
+                throw new Error("Please fill in all fields.");
+            }
+            
+            await db.collection("employee").add(data);
+            console.log('Data added to Firestore successfully');
+           
+            setData({
+                name: "",
+                age: "",
+                salary: ""
+            });
+        } catch (error) {
+            console.error('Error adding data to Firestore:', error);
+        }
     };
 
     return (

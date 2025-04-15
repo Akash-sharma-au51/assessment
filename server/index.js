@@ -1,37 +1,47 @@
-const express = require('express')
-const cookieparser = require('cookie-parser')
-const cors = require('cors')
-require('dotenv').config()
-const connectDB = require('./db.config')
-const geminiRoutes = require('./routes/geminiRoutes')
-const userRoutes = require('./routes/userRoutes')
-const { errorHandler,notFound } = require('./middlewares/errorMiddleware')
+const express = require('express');
+require('dotenv').config();
+const mongoose = require('mongoose');
+const cors = require('cors');
+const connectDB = require('./db.config');
+const userRoutes = require('./Routes/userRoute');
+const taskRoutes = require('./Routes/taskRoutes');
 
-const port = process.env.PORT || 8080
-const app = express()
-//cors option
+
+const port = process.env.PORT || 3000;
+const app = express();
 const corsOptions = {
-    origin: "http://localhost:3000",
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
-    optionsSuccessStatus: 200,
 }
+// Middleware
+app.use(express.static('public'));
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/api/users', userRoutes);
+app.use('/api/tasks', taskRoutes);
 
-//middlewares
-app.use(express.json())
-app.use(cookieparser())
-app.use(cors(corsOptions))
-app.use('/api/gemini', geminiRoutes)
-app.use('/api/users', userRoutes)
 
-//error handling
-app.use(notFound)
-app.use(errorHandler)
+// Routes
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
 
-//connect to database
+
+// Start server
+
 connectDB().then(() => {
     app.listen(port, () => {
-        console.log(`Server is running on port ${port}`)
-    })
-}).catch((error) => {
-    console.log(error)
-})
+        console.log(`Server is running on port ${port}`);
+    });
+}
+).catch((error) => {
+    console.error('Error connecting to MongoDB:', error);
+    process.exit(1);
+}
+);
+
+
+

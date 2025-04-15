@@ -1,22 +1,22 @@
-const express = require('express');
 const jwt = require('jsonwebtoken');
-const User = require('../models/Usermodal');
-const { JWT_SECRET } = require('../config');
+const User = require('../models/userModal');
+const bcrypt = require('bcryptjs');;
+const { JWT_SECRET } = process.env;
 
+const authMiddleware = async (req, res, next) => {
+    const token = req.headers['authorization']?.split(' ')[1]; // Extract token from Authorization header
+    if (!token) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
 
-const auhourizeUser = async (req, res, next) => {
     try {
-        const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, JWT_SECRET);
-        const user = await User.findOne({ _id: decoded._id, 'tokens.token': token });
-        if (!user) {
-            throw new Error();
-        }
-        req.token = token;
-        req.user = user;
-        next();
+        req.user = decoded; // Attach user info to request object
+        next(); // Proceed to the next middleware or route handler
     } catch (error) {
-        res.status(401).send({ error: 'Please authenticate' });
+        return res.status(401).json({ message: 'Invalid token' });
     }
 }
-module.exports = auhourizeUser;
+module.exports = {
+    authMiddleware,
+};
